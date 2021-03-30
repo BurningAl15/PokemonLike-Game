@@ -65,21 +65,21 @@ public class BattleSystem : MonoBehaviour
 
         yield return dialogBox.WriteType(_dialog);
 
-        yield return StartCoroutine(PlayerAction());
+        yield return StartCoroutine(PlayerAction_Interaction());
         // dialogBox.EnableActionSelector(true);
         currentCoroutine = null;
         print("coroutine cleared");
     }
 
-    IEnumerator PlayerAction()
+    IEnumerator PlayerAction_Interaction()
     {
-        state = BattleState.PlayerAction;
         yield return dialogBox.WriteType("Choose an action");
         dialogBox.EnableActionSelector(true);
         yield return new WaitForSeconds(.35f);
+        state = BattleState.PlayerAction;
     }
 
-    void PlayerMove()
+    void PlayerMove_Interaction()
     {
         state = BattleState.PlayerMove;
         dialogBox.EnableActionSelector(false);
@@ -92,7 +92,8 @@ public class BattleSystem : MonoBehaviour
         if (state == BattleState.PlayerAction)
         {
             HandleActionSelection();
-        }else if (state == BattleState.PlayerMove)
+        }
+        else if (state == BattleState.PlayerMove)
         {
             HandleMoveSelection();
         }
@@ -118,7 +119,7 @@ public class BattleSystem : MonoBehaviour
             if (currentAction == 0)
             {
                 //Fight
-                PlayerMove();
+                PlayerMove_Interaction();
             }
             else if (currentAction == 1)
             {
@@ -171,6 +172,10 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.WriteType(
             $"{playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
+        yield return playerUnit.PlayAttackAnimation();
+        
+        yield return wildUnit.PlayHitAnimation();
+        
         var damageDetails= wildUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
         yield return wildHud.UpdateHP();
 
@@ -180,6 +185,8 @@ public class BattleSystem : MonoBehaviour
         {
             yield return dialogBox.WriteType(
                 $"{wildUnit.Pokemon.Base.Name} Fainted!");
+            yield return wildUnit.PlayFaintAnimation();
+            yield return new WaitUntil(() => wildUnit.endAnimation);
             ScenaryType._instance.GameState_Overworld();
         }
         else
@@ -210,6 +217,9 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.WriteType(
             $"{wildUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
+        yield return wildUnit.PlayAttackAnimation();
+        yield return playerUnit.PlayHitAnimation();
+        
         var damageDetails = playerUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
         yield return playerHud.UpdateHP();
         
@@ -219,11 +229,14 @@ public class BattleSystem : MonoBehaviour
         { 
             yield return dialogBox.WriteType(
                 $"{playerUnit.Pokemon.Base.Name} Fainted!");
+            
+            yield return playerUnit.PlayFaintAnimation();
+            yield return new WaitUntil(() => playerUnit.endAnimation);
             ScenaryType._instance.GameState_Overworld();
         }
         else
         {
-            yield return StartCoroutine(PlayerAction());
+            yield return StartCoroutine(PlayerAction_Interaction());
         }
     }
 }
