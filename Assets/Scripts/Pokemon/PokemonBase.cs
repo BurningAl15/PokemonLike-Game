@@ -91,3 +91,29 @@ public enum PokemonType
     Fairy,
     Dragon
 }
+
+public class TypeChart
+{
+    static float[][] chart =
+    {   //                       Nor  Fir  Wat Ele  Gra Ice Fig Poi
+        /*Normal*/ new float[] { 1f,  1f,  1f,  1f,  1f, 1f, 1f,  1f},
+        /*Fire*/ new float[]   { 1f, .5f, .5f,  1f,  2f, 2f, 1f,  1f},
+        /*Water*/ new float[]  { 1f,  2f, .5f,  2f, .5f, 1f, 1f,  1f},
+        /*Elec*/ new float[]   { 1f,  1f,  2f, .5f, .5f, 2f, 1f,  1f},
+        /*Grass*/ new float[]  { 1f, .5f,  2f,  2f, .5f, 1f, 1f, .5f},
+        /*Ice*/ new float[]    { 1f,  2f, .5f,  2f, .5f, 1f, 1f,  1f},
+        /*Fight*/ new float[]  { 1f,  2f, .5f,  2f, .5f, 1f, 1f,  1f},
+        /*Poison*/ new float[] { 1f,  2f, .5f,  2f, .5f, 1f, 1f,  1f},
+    };
+
+    public static float GetEffectiveness(PokemonType attackType, PokemonType defenseType)
+    {
+        if (attackType == PokemonType.None || defenseType == PokemonType.None)
+            return 1;
+
+        int row = (int) attackType - 1;
+        int col = (int) defenseType - 1;
+
+        return chart[row][col];
+    }
+}

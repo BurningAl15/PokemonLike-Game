@@ -29,7 +29,7 @@ public class BattleSystem : MonoBehaviour
 
     private Coroutine currentCoroutine = null;
 
-    private BattleState state;
+    [SerializeField] private BattleState state;
 
     [SerializeField] private Camera mainCamera;
     
@@ -64,9 +64,9 @@ public class BattleSystem : MonoBehaviour
         string _dialog = $"A wild {wildUnit.Pokemon.Base.Name} appeared!";
 
         yield return dialogBox.WriteType(_dialog);
-        yield return new WaitForSeconds(1f);
 
-        yield return PlayerAction();
+        yield return StartCoroutine(PlayerAction());
+        // dialogBox.EnableActionSelector(true);
         currentCoroutine = null;
         print("coroutine cleared");
     }
@@ -75,9 +75,8 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.PlayerAction;
         yield return dialogBox.WriteType("Choose an action");
-        // dialogBox.EnableDialogText(false);
-        yield return new WaitForSeconds(.35f);
         dialogBox.EnableActionSelector(true);
+        yield return new WaitForSeconds(.35f);
     }
 
     void PlayerMove()
@@ -172,16 +171,15 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.WriteType(
             $"{playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
-        yield return new WaitForSeconds(1f);
-
-        bool isFainted = wildUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
+        var damageDetails= wildUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
         yield return wildHud.UpdateHP();
 
-        if (isFainted)
+        yield return ShowDamageDetails(damageDetails);
+        
+        if (damageDetails.Fainted)
         {
             yield return dialogBox.WriteType(
                 $"{wildUnit.Pokemon.Base.Name} Fainted!");
-            yield return new WaitForSeconds(1f);
             ScenaryType._instance.GameState_Overworld();
         }
         else
@@ -192,6 +190,16 @@ public class BattleSystem : MonoBehaviour
         currentCoroutine = null;
     }
 
+    IEnumerator ShowDamageDetails(DamageDetails damageDetails)
+    {
+        if (damageDetails.Critical > 1f)
+            yield return dialogBox.WriteType("A critical hit!");
+
+        if (damageDetails.TypeEfectiveness > 1)
+            yield return dialogBox.WriteType("It's super effective!");
+        else if (damageDetails.TypeEfectiveness < 1)
+            yield return dialogBox.WriteType("It's not super effective!");
+    }
 
     IEnumerator EnemyMove()
     {
@@ -202,21 +210,20 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.WriteType(
             $"{wildUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
-        yield return new WaitForSeconds(1f);
-
-        bool isFainted = playerUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
+        var damageDetails = playerUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
         yield return playerHud.UpdateHP();
         
-        if (isFainted)
-        {
+        yield return ShowDamageDetails(damageDetails);
+        
+        if (damageDetails.Fainted)
+        { 
             yield return dialogBox.WriteType(
                 $"{playerUnit.Pokemon.Base.Name} Fainted!");
-            yield return new WaitForSeconds(1f);
             ScenaryType._instance.GameState_Overworld();
         }
         else
         {
-            yield return PlayerAction();
+            yield return StartCoroutine(PlayerAction());
         }
     }
 }

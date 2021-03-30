@@ -9425,6 +9425,7 @@ MonoBehaviour:
   wildUnit: {fileID: 1801019810}
   wildHud: {fileID: 1925309604}
   dialogBox: {fileID: 2030365822}
+  state: 0
   mainCamera: {fileID: 519420031}
 --- !u!1 &1801019806
 GameObject:
@@ -9514,7 +9515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5cb40194e960a43b44ee001bbd5ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _base: {fileID: 11400000, guid: 4d6dae7657764b943afb794aad0efe82, type: 2}
+  _base: {fileID: 11400000, guid: b73ac273abbc47d4a8b4fe879cf80574, type: 2}
   level: 5
   isPlayerUnit: 0
   pokemonImage: {fileID: 1801019808}
