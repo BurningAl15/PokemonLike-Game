@@ -17,7 +17,7 @@ public class TransitionManager : MonoBehaviour
             _instance = this;
     }
 
-    public IEnumerator TransitionEffect_FadeOut (float _delay=.5f) {
+    public IEnumerator TransitionEffect_FadeOut (float _delay=1f) {
         material.SetFloat ("_Cutoff", _animationCurve.Evaluate(1));
 
         for (float i = _delay; i > 0; i -= Time.fixedDeltaTime)
@@ -31,7 +31,7 @@ public class TransitionManager : MonoBehaviour
 
     }
 
-    public IEnumerator TransitionEffect_FadeIn (float _delay=.5f) {
+    public IEnumerator TransitionEffect_FadeIn (float _delay=1f) {
         material.SetFloat ("_Cutoff", _animationCurve.Evaluate(0));
 
         for (float i = 0; i < _delay; i += Time.fixedDeltaTime) {

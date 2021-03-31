@@ -49,7 +49,6 @@ public class GameController : MonoBehaviour
 
     void To_Overworld()
     {
-        print("AAAAAA");
         GameStateManager._instance.GameState_Overworld();
         _battleSystem.gameObject.SetActive(false);
         mainCamera.SetActive(true);

@@ -102,7 +102,7 @@ public class PlayerController2D_TopDown : MonoBehaviour
             {
                 // GameStateManager._instance.GameState_Battle();
                 anim.SetBool("isMoving",false);
-                yield return TransitionManager._instance.TransitionEffect_FadeIn();
+                yield return TransitionManager._instance.TransitionEffect_FadeIn(.5f);
                 if (OnEncountered != null) OnEncountered();
             }
         }
