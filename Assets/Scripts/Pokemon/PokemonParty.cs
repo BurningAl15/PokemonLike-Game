@@ -8,6 +8,8 @@ public class PokemonParty : MonoBehaviour
 {
     [SerializeField] private List<Pokemon> pokemon_team;
 
+    public List<Pokemon> PokemonTeam => pokemon_team;
+
     private void Start()
     {
         for (int i = 0; i < pokemon_team.Count; i++)
@@ -20,7 +22,7 @@ public class PokemonParty : MonoBehaviour
     public Pokemon GetHealthyPokemon()
     {
         //return the list of pokemon that satisfy the condition
-        Pokemon tempPokemon = pokemon_team.FirstOrDefault(x => x.HP > 0);
+        Pokemon tempPokemon = pokemon_team.Where(x => x.HP > 0).FirstOrDefault();
         print(tempPokemon.Base.Name + ", I choose you!");
         return tempPokemon;
         // return pokemon_team.FirstOrDefault(x => x.HP > 0);

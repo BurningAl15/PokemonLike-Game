@@ -21,7 +21,12 @@ public class BattleDialogBox : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI ppText;
     [SerializeField] private TextMeshProUGUI typeText;
-    
+
+
+    public void SetDialog(string dialog)
+    {
+        dialogText.text = dialog;
+    }
     
     public IEnumerator WriteType(string dialog)
     {

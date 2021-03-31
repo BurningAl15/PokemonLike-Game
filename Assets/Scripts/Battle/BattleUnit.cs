@@ -47,9 +47,9 @@ public class BattleUnit : MonoBehaviour
     public void PlayerEnterAnimation()
     {
         if (isPlayerUnit)
-            pokemonImage.transform.localPosition = new Vector3(-500f, originalPos.y);
+            pokemonImage.transform.localPosition = new Vector3(-900f, originalPos.y);
         else
-            pokemonImage.transform.localPosition = new Vector3(500f, originalPos.y);
+            pokemonImage.transform.localPosition = new Vector3(900f, originalPos.y);
 
         pokemonImage.transform.DOLocalMoveX(originalPos.x, 1f);
     }
