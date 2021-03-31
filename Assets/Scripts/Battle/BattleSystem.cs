@@ -28,16 +28,17 @@ public class BattleSystem : MonoBehaviour
     private BattleDialogBox dialogBox;
 
     private Coroutine currentCoroutine = null;
+    private Coroutine runCoroutine = null;
 
     [SerializeField] private BattleState state;
 
-    [SerializeField] private Camera mainCamera;
-    
     //Main Menu Actions
     private int currentAction;
 
     //Attack Menu Actions
     private int currentMove;
+    
+    public event Action OnFinishBattle;
     
     private void OnEnable()
     {
@@ -45,7 +46,7 @@ public class BattleSystem : MonoBehaviour
         currentMove = 0;
     }
 
-    void Start()
+    public void StartBattle()
     {
         if (currentCoroutine == null)
             currentCoroutine = StartCoroutine(SetupBattle());
@@ -54,21 +55,22 @@ public class BattleSystem : MonoBehaviour
     IEnumerator SetupBattle(string dialog = "")
     {
         playerUnit.Setup();
-        playerHud.SetData(playerUnit.Pokemon);
+        playerHud.SetData(playerUnit._Pokemon);
 
         wildUnit.Setup();
-        wildHud.SetData(wildUnit.Pokemon);
+        wildHud.SetData(wildUnit._Pokemon);
 
-        dialogBox.SetMoveNames(playerUnit.Pokemon.Moves);
+        yield return TransitionManager._instance.TransitionEffect_FadeOut();
         
-        string _dialog = $"A wild {wildUnit.Pokemon.Base.Name} appeared!";
+        dialogBox.SetMoveNames(playerUnit._Pokemon.Moves);
+        
+        string _dialog = $"A wild {wildUnit._Pokemon.Base.Name} appeared!";
 
         yield return dialogBox.WriteType(_dialog);
 
         yield return StartCoroutine(PlayerAction_Interaction());
         // dialogBox.EnableActionSelector(true);
         currentCoroutine = null;
-        print("coroutine cleared");
     }
 
     IEnumerator PlayerAction_Interaction()
@@ -87,7 +89,7 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableMoveSelector(true);
     }
 
-    private void Update()
+    public void HandleUpdate()
     {
         if (state == BattleState.PlayerAction)
         {
@@ -124,17 +126,28 @@ public class BattleSystem : MonoBehaviour
             else if (currentAction == 1)
             {
                 //Run
-                this.gameObject.SetActive(false);
-                ScenaryType._instance.GameState_Overworld();
+                // GameStateManager._instance.GameState_Overworld();
+                if (currentCoroutine == null)
+                    currentCoroutine = StartCoroutine(Run());
             }
         }
+    }
+
+    IEnumerator Run()
+    {
+        print("Run init");
+        yield return TransitionManager._instance.TransitionEffect_FadeIn();
+        if (OnFinishBattle != null) OnFinishBattle();
+        this.gameObject.SetActive(false);
+        currentCoroutine = null;
+        print("Run End");
     }
 
     void HandleMoveSelection()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            if (currentMove < playerUnit.Pokemon.Moves.Count-1)
+            if (currentMove < playerUnit._Pokemon.Moves.Count-1)
                 ++currentMove;
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -144,7 +157,7 @@ public class BattleSystem : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (currentMove < playerUnit.Pokemon.Moves.Count - 2)
+            if (currentMove < playerUnit._Pokemon.Moves.Count - 2)
                 currentMove += 2;
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -153,7 +166,7 @@ public class BattleSystem : MonoBehaviour
                 currentMove -= 2;
         }
 
-        dialogBox.UpdateMoveSelection(currentMove,playerUnit.Pokemon.Moves[currentMove]);
+        dialogBox.UpdateMoveSelection(currentMove,playerUnit._Pokemon.Moves[currentMove]);
         
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -167,16 +180,18 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PerformPlayerMove()
     {
         state = BattleState.Busy;
-        
-        var move = playerUnit.Pokemon.Moves[currentMove];
+        playerUnit._Pokemon.PP_Move(currentMove);
+        var move = playerUnit._Pokemon.Moves[currentMove];
+        dialogBox.UpdateMovePP(move);
+       
         yield return dialogBox.WriteType(
-            $"{playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
+            $"{playerUnit._Pokemon.Base.Name} used {move.Base.Name}");
 
         yield return playerUnit.PlayAttackAnimation();
         
         yield return wildUnit.PlayHitAnimation();
         
-        var damageDetails= wildUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
+        var damageDetails= wildUnit._Pokemon.TakeDamage(move, playerUnit._Pokemon);
         yield return wildHud.UpdateHP();
 
         yield return ShowDamageDetails(damageDetails);
@@ -184,10 +199,12 @@ public class BattleSystem : MonoBehaviour
         if (damageDetails.Fainted)
         {
             yield return dialogBox.WriteType(
-                $"{wildUnit.Pokemon.Base.Name} Fainted!");
+                $"{wildUnit._Pokemon.Base.Name} Fainted!");
             yield return wildUnit.PlayFaintAnimation();
             yield return new WaitUntil(() => wildUnit.endAnimation);
-            ScenaryType._instance.GameState_Overworld();
+            yield return TransitionManager._instance.TransitionEffect_FadeIn();
+            if (OnFinishBattle != null) OnFinishBattle();
+            // GameStateManager._instance.GameState_Overworld();
         }
         else
         {
@@ -212,15 +229,15 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.EnemyMove;
 
-        var move = wildUnit.Pokemon.GetRandomMove();
+        var move = wildUnit._Pokemon.GetRandomMove();
         
         yield return dialogBox.WriteType(
-            $"{wildUnit.Pokemon.Base.Name} used {move.Base.Name}");
+            $"{wildUnit._Pokemon.Base.Name} used {move.Base.Name}");
 
         yield return wildUnit.PlayAttackAnimation();
         yield return playerUnit.PlayHitAnimation();
         
-        var damageDetails = playerUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
+        var damageDetails = playerUnit._Pokemon.TakeDamage(move, playerUnit._Pokemon);
         yield return playerHud.UpdateHP();
         
         yield return ShowDamageDetails(damageDetails);
@@ -228,11 +245,13 @@ public class BattleSystem : MonoBehaviour
         if (damageDetails.Fainted)
         { 
             yield return dialogBox.WriteType(
-                $"{playerUnit.Pokemon.Base.Name} Fainted!");
+                $"{playerUnit._Pokemon.Base.Name} Fainted!");
             
             yield return playerUnit.PlayFaintAnimation();
             yield return new WaitUntil(() => playerUnit.endAnimation);
-            ScenaryType._instance.GameState_Overworld();
+            yield return TransitionManager._instance.TransitionEffect_FadeIn();
+            if (OnFinishBattle != null) OnFinishBattle();
+            // GameStateManager._instance.GameState_Overworld();
         }
         else
         {

@@ -21,13 +21,15 @@ public class PlayerController2D_TopDown : MonoBehaviour
     [SerializeField] private LayerMask battleMask;
 
     private Transform playerPos;
+
+    public event Action OnEncountered;
     
     void Start()
     {
         playerPos = transform;
     }
 
-    void Update()
+    public void HandleUpdate()
     {
         Movement();
     }
@@ -78,7 +80,7 @@ public class PlayerController2D_TopDown : MonoBehaviour
         playerPos.position = targetPos;
 
         isMoving = false;
-        CheckForEncounters();
+        yield return CheckForEncounters();
         currentCoroutine = null;
     }
 
@@ -92,14 +94,16 @@ public class PlayerController2D_TopDown : MonoBehaviour
         return true;
     }
 
-    void CheckForEncounters()
+    IEnumerator CheckForEncounters()
     {
         if (Physics2D.OverlapCircle(playerPos.position, collisionRadius, battleMask) != null)
         {
             if (Random.Range(1, 101) <= 10)
             {
-                ScenaryType._instance.GameState_Battle();
-                Debug.Log("Encountered a wild pokemon");
+                // GameStateManager._instance.GameState_Battle();
+                anim.SetBool("isMoving",false);
+                yield return TransitionManager._instance.TransitionEffect_FadeIn();
+                if (OnEncountered != null) OnEncountered();
             }
         }
     }

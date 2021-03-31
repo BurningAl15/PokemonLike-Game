@@ -14,7 +14,7 @@ public class BattleUnit : MonoBehaviour
 
     public bool endAnimation = false;
     
-    public  Pokemon Pokemon { get; set; }
+    public  Pokemon _Pokemon { get; set; }
 
     private Vector3 originalPos;
 
@@ -28,10 +28,14 @@ public class BattleUnit : MonoBehaviour
 
     public void Setup()
     {
-        print("Calling");
-        Pokemon = new Pokemon(_base, level);
+        _Pokemon = new Pokemon(_base, level);
         pokemonImage.sprite = isPlayerUnit ? _base.BackSprite : _base.FrontSprite;
 
+        pokemonImage.color = originalColor;
+
+        if(!isPlayerUnit)
+            _Pokemon.ResetPP();
+        
         PlayerEnterAnimation();
     }
 

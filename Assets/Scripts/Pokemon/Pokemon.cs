@@ -33,7 +33,19 @@ public class Pokemon
         }
     }
 
-    
+    public void PP_Move(int index)
+    {
+        Moves[index].PP--;
+    }
+
+    public void ResetPP()
+    {
+        for (int i = 0; i < Moves.Count; i++)
+        {
+            Moves[i].ResetPP();
+        }
+    }
+
     public int Attack
     {
         get { return Mathf.FloorToInt((Base.Attack * Level) / 100f) + 5; }
@@ -98,6 +110,7 @@ public class Pokemon
     public Move GetRandomMove()
     {
         int r = Random.Range(0, Moves.Count);
+        Moves[r].PP--;
         return Moves[r];
     }
 }

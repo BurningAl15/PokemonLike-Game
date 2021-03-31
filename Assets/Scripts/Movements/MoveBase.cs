@@ -13,6 +13,7 @@ public class MoveBase : ScriptableObject
     [SerializeField] private int accuracy;
     [SerializeField] private int pp;
 
+    
     public string Name => name;
 
     public string Description => description;
@@ -24,4 +25,20 @@ public class MoveBase : ScriptableObject
     public int Accuracy => accuracy;
 
     public int Pp => pp;
+
+    public bool IsSpecial
+    {
+        get
+        {
+            if (type == PokemonType.Fire || type == PokemonType.Water || type == PokemonType.Grass
+            || type == PokemonType.Ice || type==PokemonType.Electric || type == PokemonType.Dragon)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }

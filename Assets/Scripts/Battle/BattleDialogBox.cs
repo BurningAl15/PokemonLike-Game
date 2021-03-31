@@ -89,4 +89,10 @@ public class BattleDialogBox : MonoBehaviour
         ppText.text = $"PP {move.PP}/{move.Base.Pp}";
         typeText.text = move.Base.Type.ToString();
     }
+
+    public void UpdateMovePP(Move move)
+    {
+        ppText.text = $"PP {move.PP}/{move.Base.Pp}";
+        typeText.text = move.Base.Type.ToString();
+    }
 }
