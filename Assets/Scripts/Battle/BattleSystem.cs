@@ -212,6 +212,7 @@ public class BattleSystem : MonoBehaviour
                 $"{wildUnit._Pokemon.Base.Name} Fainted!");
             yield return wildUnit.PlayFaintAnimation();
             yield return new WaitUntil(() => wildUnit.endAnimation);
+            
             yield return TransitionManager._instance.TransitionEffect_FadeIn();
             OnFinishBattle?.Invoke();
             // GameStateManager._instance.GameState_Overworld();
@@ -259,8 +260,26 @@ public class BattleSystem : MonoBehaviour
             
             yield return playerUnit.PlayFaintAnimation();
             yield return new WaitUntil(() => playerUnit.endAnimation);
-            yield return TransitionManager._instance.TransitionEffect_FadeIn();
-            OnFinishBattle?.Invoke();
+            
+            var nextPokemon = playerParty.GetHealthyPokemon();
+            if (nextPokemon != null)
+            {
+                playerUnit.Setup(nextPokemon);
+                playerHud.SetData(playerUnit._Pokemon);
+                
+                dialogBox.SetMoveNames(playerUnit._Pokemon.Moves);
+                yield return dialogBox.WriteType($"Go {playerUnit._Pokemon.Base.Name}, I choose you!");
+
+                yield return PlayerAction_Interaction();
+            }
+            else
+            {
+                yield return TransitionManager._instance.TransitionEffect_FadeIn();
+                OnFinishBattle?.Invoke();
+            }
+
+            // yield return TransitionManager._instance.TransitionEffect_FadeIn();
+            // OnFinishBattle?.Invoke();
             currentCoroutine = null;
         }
         else
