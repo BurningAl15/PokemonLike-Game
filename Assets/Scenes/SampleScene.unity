@@ -729,7 +729,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerController: {fileID: 1161417453}
+  _playerParty: {fileID: 1161417455}
   _battleSystem: {fileID: 1719124187}
+  _mapArea: {fileID: 716385923}
   mainCamera: {fileID: 519420028}
 --- !u!1 &236025629
 GameObject:
@@ -6017,6 +6019,7 @@ GameObject:
   m_Component:
   - component: {fileID: 716385922}
   - component: {fileID: 716385921}
+  - component: {fileID: 716385923}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -6053,6 +6056,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &716385923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716385920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4af2723968f6dd42a9e51c9a43ef325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wildPokemons:
+  - _base: {fileID: 11400000, guid: b73ac273abbc47d4a8b4fe879cf80574, type: 2}
+    level: 5
+  - _base: {fileID: 11400000, guid: 4d6dae7657764b943afb794aad0efe82, type: 2}
+    level: 7
 --- !u!1 &751225866
 GameObject:
   m_ObjectHideFlags: 0
@@ -7113,6 +7133,7 @@ GameObject:
   - component: {fileID: 1161417451}
   - component: {fileID: 1161417453}
   - component: {fileID: 1161417454}
+  - component: {fileID: 1161417455}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -7226,6 +7247,23 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1161417455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161417450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edbb578e7e2e1aa4b9d7c720ada6c92b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pokemon_team:
+  - _base: {fileID: 11400000, guid: 5bdf883cd6116fc468ea150f4d8f3a54, type: 2}
+    level: 5
+  - _base: {fileID: 11400000, guid: b73ac273abbc47d4a8b4fe879cf80574, type: 2}
+    level: 5
 --- !u!1 &1256083441
 GameObject:
   m_ObjectHideFlags: 0
@@ -9701,8 +9739,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5cb40194e960a43b44ee001bbd5ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _base: {fileID: 11400000, guid: b73ac273abbc47d4a8b4fe879cf80574, type: 2}
-  level: 5
   isPlayerUnit: 0
   pokemonImage: {fileID: 1801019808}
   endAnimation: 0
@@ -9794,8 +9830,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5cb40194e960a43b44ee001bbd5ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _base: {fileID: 11400000, guid: 5bdf883cd6116fc468ea150f4d8f3a54, type: 2}
-  level: 7
   isPlayerUnit: 1
   pokemonImage: {fileID: 1887850949}
   endAnimation: 0

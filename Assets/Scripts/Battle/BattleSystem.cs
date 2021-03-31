@@ -28,7 +28,6 @@ public class BattleSystem : MonoBehaviour
     private BattleDialogBox dialogBox;
 
     private Coroutine currentCoroutine = null;
-    private Coroutine runCoroutine = null;
 
     [SerializeField] private BattleState state;
 
@@ -46,19 +45,30 @@ public class BattleSystem : MonoBehaviour
         currentMove = 0;
     }
 
-    public void StartBattle()
+    private PokemonParty playerParty;
+    private Pokemon wildPokemon;
+    
+    public void StartBattle(PokemonParty _playerParty, Pokemon _wildPokemon)
     {
+        Debug.Log("Choosing pokemons ...");
+
+        this.playerParty = _playerParty;
+        this.wildPokemon = _wildPokemon;
+        
         if (currentCoroutine == null)
             currentCoroutine = StartCoroutine(SetupBattle());
     }
 
     IEnumerator SetupBattle(string dialog = "")
     {
-        playerUnit.Setup();
+        Debug.Log("Setting Up ...");
+
+        playerUnit.Setup(playerParty.GetHealthyPokemon());
         playerHud.SetData(playerUnit._Pokemon);
 
-        wildUnit.Setup();
+        wildUnit.Setup(wildPokemon);
         wildHud.SetData(wildUnit._Pokemon);
+        Debug.Log("Pokemons Choosed ...");
 
         yield return TransitionManager._instance.TransitionEffect_FadeOut();
         
@@ -137,7 +147,7 @@ public class BattleSystem : MonoBehaviour
     {
         print("Run init");
         yield return TransitionManager._instance.TransitionEffect_FadeIn();
-        if (OnFinishBattle != null) OnFinishBattle();
+        OnFinishBattle?.Invoke();
         this.gameObject.SetActive(false);
         currentCoroutine = null;
         print("Run End");
@@ -203,7 +213,7 @@ public class BattleSystem : MonoBehaviour
             yield return wildUnit.PlayFaintAnimation();
             yield return new WaitUntil(() => wildUnit.endAnimation);
             yield return TransitionManager._instance.TransitionEffect_FadeIn();
-            if (OnFinishBattle != null) OnFinishBattle();
+            OnFinishBattle?.Invoke();
             // GameStateManager._instance.GameState_Overworld();
         }
         else
@@ -250,8 +260,8 @@ public class BattleSystem : MonoBehaviour
             yield return playerUnit.PlayFaintAnimation();
             yield return new WaitUntil(() => playerUnit.endAnimation);
             yield return TransitionManager._instance.TransitionEffect_FadeIn();
-            if (OnFinishBattle != null) OnFinishBattle();
-            // GameStateManager._instance.GameState_Overworld();
+            OnFinishBattle?.Invoke();
+            currentCoroutine = null;
         }
         else
         {

@@ -1,25 +1,38 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
 public class Pokemon
 {
-    public PokemonBase Base;
-    public int Level;
+    [SerializeField] private PokemonBase _base;
+    [SerializeField] private int level;
+
+    public PokemonBase Base
+    {
+        get
+        {
+            return _base;
+        }  
+    }
+
+    public int Level
+    {
+        get
+        {
+            return level;
+        }
+    }
 
     public int HP { get; set; }
     public List<Move> Moves { get; set; }
 
-    // public int OldHP;
-    
-    public Pokemon(PokemonBase pBase, int pLevel)
+    public void Init()
     {
-        Base = pBase;
-        Level = pLevel;
         HP = MaxHP;
-        // OldHP = HP;
         //Generate Moves
         Moves = new List<Move>();
         for (int i = 0; i < Base.LearnableMoves.Count; i++)
@@ -96,6 +109,7 @@ public class Pokemon
         int damage = Mathf.FloorToInt(d * modifiers);
 
         HP -= damage;
+
         if (HP <= 0)
         {
             HP = 0;

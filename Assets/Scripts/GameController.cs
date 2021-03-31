@@ -7,10 +7,17 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
+    [Header("Player Components")]
     [SerializeField] private PlayerController2D_TopDown _playerController;
-    [SerializeField] private BattleSystem _battleSystem;
-    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private PokemonParty _playerParty;
 
+    [Header("Battle System Components")]
+    [SerializeField] private BattleSystem _battleSystem;
+
+    [Header("Map Area Components")]
+    [SerializeField] private MapArea _mapArea;
+    
+    [SerializeField] private GameObject mainCamera;
     private Coroutine currentCoroutine = null;
     
     private void Start()
@@ -43,8 +50,9 @@ public class GameController : MonoBehaviour
         GameStateManager._instance.GameState_Battle();
         _battleSystem.gameObject.SetActive(true);
         mainCamera.SetActive(false);
-        
-        _battleSystem.StartBattle();
+
+        Debug.Log("Starting Battle ...");
+        _battleSystem.StartBattle(_playerParty,_mapArea.GetRandomWildPokemon());
     }
 
     void To_Overworld()
