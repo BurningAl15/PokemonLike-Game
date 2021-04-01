@@ -10703,9 +10703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 1887850951}
-  playerHud: {fileID: 1073027273}
   wildUnit: {fileID: 1801019810}
-  wildHud: {fileID: 1925309604}
   dialogBox: {fileID: 2030365822}
   _partyScreen: {fileID: 1975263179}
   state: 0
@@ -10798,6 +10796,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerUnit: 0
+  hud: {fileID: 1925309604}
   pokemonImage: {fileID: 1801019808}
   endAnimation: 0
 --- !u!1 &1887850947
@@ -10889,6 +10888,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerUnit: 1
+  hud: {fileID: 1073027273}
   pokemonImage: {fileID: 1887850949}
   endAnimation: 0
 --- !u!1 &1887952696

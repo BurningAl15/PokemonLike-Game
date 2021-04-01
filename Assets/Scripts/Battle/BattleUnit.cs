@@ -4,15 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 public class BattleUnit : MonoBehaviour
 {
     // [SerializeField] private PokemonBase _base;
     // [SerializeField] private int level;
     [SerializeField] private bool isPlayerUnit;
-
     public bool IsPlayerUnit => isPlayerUnit;
 
+    [FormerlySerializedAs("pokemonHud")] [SerializeField] private BattleHud hud;
+    
+    public BattleHud Hud => hud;
+    
     [SerializeField] private Image pokemonImage;
 
     public bool endAnimation = false;
@@ -35,6 +39,8 @@ public class BattleUnit : MonoBehaviour
         
         if(!isPlayerUnit)
             _Pokemon.Init();
+        
+        hud.SetData(_Pokemon);
         
         print(_Pokemon.Base.Name + " - " + _Pokemon.HP + " / " + _Pokemon.MaxHP);
         pokemonImage.sprite = isPlayerUnit ? _Pokemon.Base.BackSprite : _Pokemon.Base.FrontSprite;
