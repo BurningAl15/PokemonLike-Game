@@ -7,9 +7,9 @@ using UnityEngine;
 public enum BattleState
 {
     Start,
-    PlayerAction,
-    PlayerMove,
-    EnemyMove,
+    ActionSelection,
+    MoveSelection,
+    PerformMove,
     Busy,
     PartyScreen
 }
@@ -66,6 +66,8 @@ public class BattleSystem : MonoBehaviour
 
         this.playerParty = _playerParty;
         this.wildPokemon = _wildPokemon;
+
+        currentCoroutine = null;
         
         if (currentCoroutine == null)
             currentCoroutine = StartCoroutine(SetupBattle());
@@ -92,7 +94,7 @@ public class BattleSystem : MonoBehaviour
 
         yield return dialogBox.WriteType(_dialog);
 
-        yield return StartCoroutine(PlayerAction_Interaction());
+        yield return StartCoroutine(ActionSelection_Interaction());
         currentCoroutine = null;
     }
 
@@ -100,11 +102,11 @@ public class BattleSystem : MonoBehaviour
 
     public void HandleUpdate()
     {
-        if (state == BattleState.PlayerAction)
+        if (state == BattleState.ActionSelection)
         {
             HandleActionSelection();
         }
-        else if (state == BattleState.PlayerMove)
+        else if (state == BattleState.MoveSelection)
         {
             HandleMoveSelection();
         }
@@ -118,48 +120,22 @@ public class BattleSystem : MonoBehaviour
     
     IEnumerator Run()
     {
-        print("Run init");
         yield return TransitionManager._instance.TransitionEffect_FadeIn();
         OnFinishBattle?.Invoke();
         this.gameObject.SetActive(false);
         currentCoroutine = null;
-        print("Run End");
     }
 
     IEnumerator PerformPlayerMove()
     {
-        state = BattleState.Busy;
+        state = BattleState.PerformMove;
         playerUnit._Pokemon.PP_Move(currentMove_Index);
         var move = playerUnit._Pokemon.Moves[currentMove_Index];
         dialogBox.UpdateMovePP(move);
-       
-        yield return dialogBox.WriteType(
-            $"{playerUnit._Pokemon.Base.Name} used {move.Base.Name}");
 
-        yield return playerUnit.PlayAttackAnimation();
-        
-        yield return wildUnit.PlayHitAnimation();
-        
-        var damageDetails= wildUnit._Pokemon.TakeDamage(move, playerUnit._Pokemon);
-        yield return wildHud.UpdateHP();
+        yield return RunMove(playerUnit, wildUnit, move);
 
-        yield return ShowDamageDetails(damageDetails);
-        
-        if (damageDetails.Fainted)
-        {
-            yield return dialogBox.WriteType(
-                $"{wildUnit._Pokemon.Base.Name} Fainted!");
-            yield return wildUnit.PlayFaintAnimation();
-            yield return new WaitUntil(() => wildUnit.endAnimation);
-            
-            yield return TransitionManager._instance.TransitionEffect_FadeIn();
-            OnFinishBattle?.Invoke();
-        }
-        else
-        {
-            yield return EnemyMove();
-        }
-        
+        print("Coroutine Cleared - Performed Move");
         currentCoroutine = null;
     }
 
@@ -176,40 +152,67 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator EnemyMove()
     {
-        state = BattleState.EnemyMove;
-
+        state = BattleState.PerformMove;
         var move = wildUnit._Pokemon.GetRandomMove();
-        
-        yield return dialogBox.WriteType(
-            $"{wildUnit._Pokemon.Base.Name} used {move.Base.Name}");
 
-        yield return wildUnit.PlayAttackAnimation();
-        yield return playerUnit.PlayHitAnimation();
+        yield return RunMove(wildUnit, playerUnit, move);
+    }
+
+    IEnumerator RunMove(BattleUnit sourceUnit, BattleUnit targetUnit, Move move)
+    {
+        print("Running Move");
+        yield return dialogBox.WriteType(
+            $"{sourceUnit._Pokemon.Base.Name} used {move.Base.Name}");
+
+        yield return sourceUnit.PlayAttackAnimation();
+        yield return targetUnit.PlayHitAnimation();
         
-        var damageDetails = playerUnit._Pokemon.TakeDamage(move, playerUnit._Pokemon);
-        yield return playerHud.UpdateHP();
+        var damageDetails = targetUnit._Pokemon.TakeDamage(move, sourceUnit._Pokemon);
+
+        if(sourceUnit.IsPlayerUnit)
+            yield return wildHud.UpdateHP();
+        else
+            yield return playerHud.UpdateHP();
         
         yield return ShowDamageDetails(damageDetails);
         
         if (damageDetails.Fainted)
         { 
             yield return dialogBox.WriteType(
-                $"{playerUnit._Pokemon.Base.Name} Fainted!");
+                $"{targetUnit._Pokemon.Base.Name} Fainted!");
             
-            yield return playerUnit.PlayFaintAnimation();
-            yield return new WaitUntil(() => playerUnit.endAnimation);
-            
+            yield return targetUnit.PlayFaintAnimation();
+            yield return new WaitUntil(() => targetUnit.endAnimation);
+
+            yield return CheckForBattleOver(targetUnit);
+
+            if (sourceUnit.IsPlayerUnit)
+            {
+                print("Coroutine Cleared! - Enemy Fainted");                
+                currentCoroutine = null;
+            }
+        }
+        else
+        {
+            if (sourceUnit.IsPlayerUnit)
+            {
+                yield return EnemyMove();
+            }
+            else
+            {
+                yield return ActionSelection_Interaction();
+            }
+        }
+    }
+
+    IEnumerator CheckForBattleOver(BattleUnit faintedUnit)
+    {
+        //If an enemy pokemon faints our pokemon
+        if (faintedUnit.IsPlayerUnit)
+        {
             var nextPokemon = playerParty.GetHealthyPokemon();
-            print(nextPokemon);
             if (nextPokemon != null)
             {
-                // playerUnit.Setup(nextPokemon);
-                // playerHud.SetData(playerUnit._Pokemon);
-                //
-                // dialogBox.SetMoveNames(playerUnit._Pokemon.Moves);
-                // yield return dialogBox.WriteType($"Go {playerUnit._Pokemon.Base.Name}, I choose you!");
-                //
-                // yield return PlayerAction_Interaction();
                 OpenPartyScreen();
             }
             else
@@ -218,14 +221,15 @@ public class BattleSystem : MonoBehaviour
                 OnFinishBattle?.Invoke();
             }
 
-            currentCoroutine = null;
         }
+        //If our pokemon faints enemy
         else
         {
-            yield return StartCoroutine(PlayerAction_Interaction());
+            yield return TransitionManager._instance.TransitionEffect_FadeIn();
+            OnFinishBattle?.Invoke();
         }
     }
-
+    
     #endregion
 
     #region Handle Input
@@ -273,7 +277,7 @@ public class BattleSystem : MonoBehaviour
             _partyScreen.gameObject.SetActive(false);
 
             if (currentCoroutine == null)
-                currentCoroutine = StartCoroutine(PlayerAction_Interaction(true,false));
+                currentCoroutine = StartCoroutine(ActionSelection_Interaction(true,false));
         }
     }
 
@@ -284,12 +288,6 @@ public class BattleSystem : MonoBehaviour
             yield return dialogBox.WriteType($"Come back {playerUnit._Pokemon.Base.Name}");
             yield return playerUnit.PlayFaintAnimation();
         }
-        // else
-        // {
-        //     yield return dialogBox.WriteType($"Good Job {playerUnit._Pokemon.Base.Name}, come back");
-        //     yield return playerUnit.PlayFaintAnimation();
-        // }
-
         
         playerUnit.Setup(newPokemon);
         playerHud.SetData(newPokemon);
@@ -323,7 +321,7 @@ public class BattleSystem : MonoBehaviour
             {
                 //Fight
                 case 0:
-                    PlayerMove_Interaction();
+                    MoveSelection_Interaction();
                     break;
                 //Bag
                 case 1:
@@ -376,26 +374,26 @@ public class BattleSystem : MonoBehaviour
             dialogBox.EnableMoveSelector(false);
             dialogBox.EnableDialogText(true);
             if (currentCoroutine == null)
-                currentCoroutine = StartCoroutine(PlayerAction_Interaction(true,false));
+                currentCoroutine = StartCoroutine(ActionSelection_Interaction(true,false));
         }
     }
 
-    IEnumerator PlayerAction_Interaction(bool end=false,bool isTypewrite=true)
+    IEnumerator ActionSelection_Interaction(bool end=false,bool isTypewrite=true)
     {
         if(isTypewrite)
             yield return dialogBox.WriteType("Choose an action");
         else
             dialogBox.SetDialog("Choose an action");
-        state = BattleState.PlayerAction;
+        state = BattleState.ActionSelection;
         dialogBox.EnableActionSelector(true);
         yield return new WaitForSeconds(.35f);
         if (end)
             currentCoroutine = null;
     }
 
-    void PlayerMove_Interaction()
+    void MoveSelection_Interaction()
     {
-        state = BattleState.PlayerMove;
+        state = BattleState.MoveSelection;
         dialogBox.EnableActionSelector(false);
         dialogBox.EnableDialogText(false);
         dialogBox.EnableMoveSelector(true);

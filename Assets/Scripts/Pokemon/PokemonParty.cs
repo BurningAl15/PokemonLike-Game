@@ -12,6 +12,7 @@ public class PokemonParty : MonoBehaviour
 
     private void Start()
     {
+        // print("Initializing Pokemon Party");
         for (int i = 0; i < pokemon_team.Count; i++)
         {
             pokemon_team[i].Init();

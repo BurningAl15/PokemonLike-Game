@@ -10,6 +10,9 @@ public class BattleUnit : MonoBehaviour
     // [SerializeField] private PokemonBase _base;
     // [SerializeField] private int level;
     [SerializeField] private bool isPlayerUnit;
+
+    public bool IsPlayerUnit => isPlayerUnit;
+
     [SerializeField] private Image pokemonImage;
 
     public bool endAnimation = false;
