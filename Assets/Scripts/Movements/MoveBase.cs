@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName="Move",menuName = "Pokemon/Create new move")]
 public class MoveBase : ScriptableObject
@@ -13,7 +15,9 @@ public class MoveBase : ScriptableObject
     [SerializeField] private int accuracy;
     [SerializeField] private int pp;
 
-    [SerializeField] private bool isSpecial;
+    [SerializeField] private MoveCategory _category;
+    [SerializeField] private MoveEffects _effects;
+    [SerializeField] private MoveTarget _target;
     
     public string Name => name;
 
@@ -27,18 +31,34 @@ public class MoveBase : ScriptableObject
 
     public int Pp => pp;
 
-    public bool IsSpecial => isSpecial;
+    public MoveCategory Category => _category;
 
-    // get
-    // {
-    //     if (type == PokemonType.Fire || type == PokemonType.Water || type == PokemonType.Grass
-    //     || type == PokemonType.Ice || type==PokemonType.Electric || type == PokemonType.Dragon)
-    //     {
-    //         return true;
-    //     }
-    //     else
-    //     {
-    //         return false;
-    //     }
-    // }
+    public MoveEffects Effects => _effects;
+
+    public MoveTarget Target => _target;
+}
+
+[Serializable]
+public class MoveEffects
+{
+    [SerializeField] private List<StatBoost> boosts;
+
+    public List<StatBoost> Boosts => boosts;
+}
+
+[Serializable]
+public class StatBoost
+{
+    public Stat stat;
+    public int boost;
+}
+
+public enum MoveCategory
+{
+    Physical,Special,Status
+}
+
+public enum MoveTarget
+{
+    Foe,Self
 }

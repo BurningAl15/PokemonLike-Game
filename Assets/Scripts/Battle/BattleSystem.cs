@@ -165,6 +165,7 @@ public class BattleSystem : MonoBehaviour
         yield return RunMove(wildUnit, playerUnit, move);
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     IEnumerator RunMove(BattleUnit sourceUnit, BattleUnit targetUnit, Move move)
     {
         print("Running Move");
@@ -173,17 +174,27 @@ public class BattleSystem : MonoBehaviour
 
         yield return sourceUnit.PlayAttackAnimation();
         yield return targetUnit.PlayHitAnimation();
-        
-        var damageDetails = targetUnit._Pokemon.TakeDamage(move, sourceUnit._Pokemon);
 
-        // if(sourceUnit.IsPlayerUnit)
+        if (move.Base.Category == MoveCategory.Status)
+        {
+            var effects = move.Base.Effects;
+            if (effects.Boosts != null)
+            {
+                if(move.Base.Target==MoveTarget.Self)
+                    sourceUnit._Pokemon.ApplyBoosts(move.Base.Effects.Boosts);
+                else
+                    targetUnit._Pokemon.ApplyBoosts(move.Base.Effects.Boosts);
+            }
+        }
+        else
+        {
+            var damageDetails = targetUnit._Pokemon.TakeDamage(move, sourceUnit._Pokemon);
             yield return targetUnit.Hud.UpdateHP();
-        // else
-        //     yield return playerHud.UpdateHP();
+            yield return ShowDamageDetails(damageDetails);
+        }
         
-        yield return ShowDamageDetails(damageDetails);
         
-        if (damageDetails.Fainted)
+        if (targetUnit._Pokemon.HP <= 0)
         { 
             yield return dialogBox.WriteType(
                 $"{targetUnit._Pokemon.Base.Name} Fainted!");

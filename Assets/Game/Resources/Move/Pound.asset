@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2e5c9d3ee675994faf24ad1023a87c3, type: 3}
-  m_Name: Ember
+  m_Name: Pound
   m_EditorClassIdentifier: 
-  name: Ember
+  name: Pound
   description: 
-  type: 2
-  power: 45
+  type: 1
+  power: 40
   accuracy: 100
-  pp: 25
-  _category: 1
+  pp: 35
+  _category: 0
   _effects:
     boosts: []
   _target: 0
