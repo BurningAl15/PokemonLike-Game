@@ -123,6 +123,54 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &991202
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 991203}
+  - component: {fileID: 991204}
+  m_Layer: 0
+  m_Name: ColorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &991203
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991202}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2129425314}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &991204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 202d81a6fbf7c71469f1e3b96f52caab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colors:
+  - color: {r: 0.39607844, g: 0, b: 1, a: 1}
+    description: Highlight Color
+  - color: {r: 0, g: 0, b: 0, a: 1}
+    description: Back to normal Color
 --- !u!1 &39130551
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,10 +405,10 @@ RectTransform:
   m_Father: {fileID: 1932879818}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 308.96344, y: -85.02845}
+  m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &91827233
 MonoBehaviour:
@@ -409,8 +457,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -901,10 +949,10 @@ RectTransform:
   m_Father: {fileID: 1932879818}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 143.96342, y: -85.02845}
+  m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &312037083
 MonoBehaviour:
@@ -953,8 +1001,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6834,10 +6882,10 @@ RectTransform:
   m_Father: {fileID: 1932879818}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 308.96344, y: -20.02845}
+  m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &818541320
 MonoBehaviour:
@@ -6886,8 +6934,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6968,10 +7016,10 @@ RectTransform:
   m_Father: {fileID: 1932879818}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 143.96342, y: -20.02845}
+  m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &970527286
 MonoBehaviour:
@@ -7020,8 +7068,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -7812,6 +7860,12 @@ MonoBehaviour:
     level: 5
   - _base: {fileID: 11400000, guid: b73ac273abbc47d4a8b4fe879cf80574, type: 2}
     level: 9
+  - _base: {fileID: 11400000, guid: 4d6dae7657764b943afb794aad0efe82, type: 2}
+    level: 7
+  - _base: {fileID: 11400000, guid: b73ac273abbc47d4a8b4fe879cf80574, type: 2}
+    level: 6
+  - _base: {fileID: 11400000, guid: 5bdf883cd6116fc468ea150f4d8f3a54, type: 2}
+    level: 12
 --- !u!1001 &1228869518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10690,7 +10744,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 321, y: 63}
+  m_AnchoredPosition: {x: 332, y: 102}
   m_SizeDelta: {x: 187.5, y: 187.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1801019808
@@ -11022,7 +11076,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1932879818
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11043,8 +11097,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -187.8, y: -1.2}
-  m_SizeDelta: {x: 307.1368, y: 105.0569}
+  m_AnchoredPosition: {x: -260.7, y: -1.2}
+  m_SizeDelta: {x: 452.92685, y: 105.0569}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1932879819
 MonoBehaviour:
@@ -11066,7 +11120,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 125, y: 35}
+  m_CellSize: {x: 150, y: 35}
   m_Spacing: {x: 15, y: 30}
   m_Constraint: 1
   m_ConstraintCount: 2
@@ -11236,6 +11290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageText: {fileID: 1390349166}
+  pokemons: []
 --- !u!1 &2020757063
 GameObject:
   m_ObjectHideFlags: 0
@@ -11395,7 +11450,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lettersPerSecond: 30
-  highlightedColor: {r: 0.39613724, g: 0, b: 1, a: 1}
   dialogText: {fileID: 1473102162}
   actionSelector: {fileID: 1932879817}
   moveSelector: {fileID: 459042672}
@@ -11811,6 +11865,7 @@ Transform:
   m_Children:
   - {fileID: 152393053}
   - {fileID: 475661403}
+  - {fileID: 991203}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

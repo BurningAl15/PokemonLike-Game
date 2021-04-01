@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class BattleDialogBox : MonoBehaviour
 {
     [SerializeField] private int lettersPerSecond;
-    [SerializeField] private Color highlightedColor;
     
     [FormerlySerializedAs("dialogBox")] [SerializeField] private TextMeshProUGUI dialogText;
 
@@ -21,7 +20,7 @@ public class BattleDialogBox : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI ppText;
     [SerializeField] private TextMeshProUGUI typeText;
-
+    
 
     public void SetDialog(string dialog)
     {
@@ -62,9 +61,9 @@ public class BattleDialogBox : MonoBehaviour
         for (int i = 0; i < actionTexts.Count; ++i)
         {
             if (i == selectedAction)
-                actionTexts[i].color = highlightedColor;
+                actionTexts[i].color = ColorManager._instance.GetColorValue(ColorKey.Hightlight);
             else
-                actionTexts[i].color=Color.black;
+                actionTexts[i].color = ColorManager._instance.GetColorValue(ColorKey.Normal);
         }
     }
 
@@ -86,15 +85,16 @@ public class BattleDialogBox : MonoBehaviour
         for (int i = 0; i < moveTexts.Count; ++i)
         {
             if (i == selectedMove)
-                moveTexts[i].color = highlightedColor;
+                moveTexts[i].color = ColorManager._instance.GetColorValue(ColorKey.Hightlight);
             else
-                moveTexts[i].color=Color.black;
+                moveTexts[i].color = ColorManager._instance.GetColorValue(ColorKey.Normal);
         }
 
         ppText.text = $"PP {move.PP}/{move.Base.Pp}";
         typeText.text = move.Base.Type.ToString();
     }
 
+    
     public void UpdateMovePP(Move move)
     {
         ppText.text = $"PP {move.PP}/{move.Base.Pp}";
