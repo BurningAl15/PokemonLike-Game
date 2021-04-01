@@ -27,6 +27,8 @@ public class Pokemon
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> StatBoosts { get; private set; }
 
+    public Queue<string> statusChanges { get; private set; } = new Queue<string>();
+    
     public void Init()
     {
         //Generate Moves
@@ -44,15 +46,7 @@ public class Pokemon
         //Calculate all stats including MaxHP
         CalculateStats();
         HP = MaxHP;
-
-        StatBoosts = new Dictionary<Stat, int>()
-        {
-            {Stat.Attack, 0},
-            {Stat.Defense, 0},
-            {Stat.SpAttack, 0},
-            {Stat.SpDefense, 0},
-            {Stat.Speed, 0}
-        };
+        ResetStatBoost();
     }
 
     void CalculateStats()
@@ -65,6 +59,18 @@ public class Pokemon
         Stats.Add(Stat.Speed, Mathf.FloorToInt((Base.Speed * Level) / 100f) + 5);
 
         MaxHP = Mathf.FloorToInt((Base.MAXHp * Level) / 100f) + 10;
+    }
+
+    void ResetStatBoost()
+    {
+        StatBoosts = new Dictionary<Stat, int>()
+        {
+            {Stat.Attack, 0},
+            {Stat.Defense, 0},
+            {Stat.SpAttack, 0},
+            {Stat.SpDefense, 0},
+            {Stat.Speed, 0}
+        };
     }
     
     int GetStat(Stat stat)
@@ -92,7 +98,12 @@ public class Pokemon
             var boost = temp.boost;
 
             StatBoosts[stat] = Mathf.Clamp(StatBoosts[stat] + boost,-6,6);
-            
+
+            if (boost >= 0)
+                statusChanges.Enqueue($"{Base.Name}'s {stat} rose!");
+            else
+                statusChanges.Enqueue($"{Base.Name}'s {stat} fell!");
+
             Debug.Log($"{stat} has been boosted to {StatBoosts[stat]}");
         }
     }
@@ -177,6 +188,11 @@ public class Pokemon
         int r = Random.Range(0, Moves.Count);
         Moves[r].PP--;
         return Moves[r];
+    }
+
+    public void OnBattleOver()
+    {
+        ResetStatBoost();
     }
 }
 
